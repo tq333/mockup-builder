@@ -15,43 +15,63 @@
 
 ---
 
-## 📸 真实示例：LootBar 订单页
+## 📸 真实示例：X (Twitter) 首页
 
-输入：一张订单列表 + 一张订单详情截图 + 一句话："生成两个页面，点击订单列表打开详情"
+输入：一张 X 首页截图 + 一句话："帮我用规范画一版 X 的 Home"
 
-输出：单 HTML 文件，含 navbar / sidebar / 订单列表 / 订单详情双视图，点击订单卡 → 切换到详情页。
+输出：单 HTML 文件，含三栏布局——左侧导航（Home / Explore / Notifications / Grok / Premium ...）+ 中间 Feed（For you / Following tabs、Compose、多条 tweets 带媒体和互动数据）+ 右侧 Trends / Who to follow。
 
-![LootBar Orders Demo](docs/screenshots/lootbar-orders.png)
+![X Home Demo](docs/screenshots/x-home.png)
 
 代码片段（生成器自动产出）：
 
 ```html
-<body data-theme="yellow">
-  <nav class="navbar navbar-solid">
-    <a href="#" class="navbar-brand">
-      <i class="iconoir-treasure-chest icon-sm"></i> LOOTBAR
-    </a>
-    ...
-  </nav>
+<body>
+  <div class="x-shell">
 
-  <main>
-    <section class="view active" id="view-list">
-      <div class="card order-card" data-order="T1072393927">
-        <div class="order-header">
-          <span>Apr 27, 2026 16:51:55</span>
-          <span class="order-status status-completed">Completed</span>
+    <!-- 左侧导航 -->
+    <aside class="x-aside">
+      <a href="#" class="x-logo">X</a>
+      <nav class="x-nav">
+        <a href="#" class="x-nav-item active"><i class="iconoir-home"></i> Home</a>
+        <a href="#" class="x-nav-item"><i class="iconoir-search"></i> Explore</a>
+        <a href="#" class="x-nav-item">
+          <i class="iconoir-bell"></i> Notifications
+          <span class="badge x-nav-badge">20+</span>
+        </a>
+        ...
+      </nav>
+      <button class="btn btn-primary btn-block x-post-btn">Post</button>
+    </aside>
+
+    <!-- 中间 Feed -->
+    <main class="x-main">
+      <article class="x-tweet">
+        <div class="avatar avatar-md">L</div>
+        <div class="x-tweet-body">
+          <div class="x-tweet-head">
+            <span class="x-tweet-name">岚叔</span>
+            <i class="iconoir-verified-badge icon-xs"></i>
+            <span class="x-tweet-handle">@LufzzLiz · May 10</span>
+          </div>
+          <div class="x-tweet-text">...</div>
+          <div class="x-tweet-media">
+            <div class="img-ph">Image · 3D Plant Cell architecture page</div>
+          </div>
+          <div class="x-tweet-actions">
+            <span class="x-action"><i class="iconoir-chat-bubble-empty icon-sm"></i> 277</span>
+            <span class="x-action"><i class="iconoir-refresh-double icon-sm"></i> 343</span>
+            <span class="x-action"><i class="iconoir-heart icon-sm"></i> 2.4K</span>
+            ...
+          </div>
         </div>
-        <div class="order-body">
-          <div class="img-ph order-thumb">IMG</div>
-          ...
-        </div>
-      </div>
-    </section>
-  </main>
+      </article>
+    </main>
+  </div>
 </body>
 ```
 
-> 全部用 `var(--color-*)` token + iconoir 图标 + 规范类（`.navbar-solid` / `.card` / `.img-ph`...），不写一个硬编码 hex。
+> 全部用 `var(--color-*)` token + iconoir 图标 + 规范类（`.btn-primary` / `.avatar` / `.badge` / `.tag-success` / `.img-ph` ...），没有一个硬编码 hex，没有一个 emoji 当图标。X 的"verified 蓝勾"也是 iconoir 图标 + accent token，不贴真 logo。
 
 ---
 
