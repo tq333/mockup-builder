@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python (lint script artifacts)
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# Local generated demos / scratch
+*.local.html
+*.draft.html
+/scratch/
