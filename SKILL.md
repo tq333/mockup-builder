@@ -66,6 +66,8 @@ These four are non-negotiable. The lint script enforces them.
 2. **Icons → iconoir only.** Always `<i class="iconoir-XXX"></i>`. Emoji is forbidden.
 3. **Classes → regulation only.** Use `.btn` / `.card` / `.list` / `.accordion` / etc. Never invent `.my-foo` / `.special-bar`.
 4. **Sizes → scale only.** Use `var(--sp*)` and `var(--fs-*)`. No raw `padding:13px` / `font-size:17px`.
+5. **Mobile frame → 375px width, 8px radius (mandatory).** Use `width:375px` on `.phone-frame`. Never use other widths (300 / 360 / 390px). Do NOT include `.phone-notch` or `.phone-home` — both are hidden by the spec.
+6. **Desktop frame → 1440px width (mandatory).** Use `.browser-frame` with `width:1440px` for any PC / desktop page. Never shrink it arbitrarily.
 
 Full list with anti-patterns: `references/red-lines.md`.
 

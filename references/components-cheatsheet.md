@@ -241,7 +241,30 @@
 
 ## 16. Page Frames
 - `.phone-frame` / `.phone-screen` 手机外壳
-- `.browser-frame` / `.browser-bar` / `.browser-content` 浏览器外壳
+- `.browser-frame` / `.browser-bar` / `.browser-content` 桌面端外壳
+
+**移动端宽度规范（强制）：**
+```html
+<!-- ✅ 移动端：375px 宽，圆角 8px，不含 notch / home bar -->
+<div class="phone-frame" style="width:375px;">
+  <div class="phone-screen" style="...">
+    <!-- 内容 -->
+  </div>
+</div>
+```
+⚠️ 禁止用其他宽度（300 / 360 / 390px）；禁止在 phone-frame 内写 `.phone-notch` 和 `.phone-home`（规范已隐藏）。
+
+**桌面端宽度规范（强制）：**
+```html
+<!-- ✅ 桌面端：1440px 宽 -->
+<div class="browser-frame" style="width:1440px;">
+  <div class="browser-bar">...</div>
+  <div class="browser-content">
+    <!-- 内容 -->
+  </div>
+</div>
+```
+⚠️ 桌面端页面使用 `.browser-frame`，宽度统一 `1440px`，不得随意缩窄。
 
 ## 17. Icons (iconoir)
 常用清单（更多去 https://iconoir.com）：
