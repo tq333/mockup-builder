@@ -289,7 +289,102 @@
 
 ⚠️ 超链接 `<a>` 永远走 `var(--color-link)`，不跟主题。
 
-## 19. Price 价格颜色约定（电商专用）
+## 20. 移动端专用组件（Mobile-only）
+
+### 20-1. `.img-ph` — 图片 / 视频占位块
+
+> ⚠️ `mockup-kit.html` 里已定义，但每个独立 demo 文件需**自带此 CSS**，否则占位块呈白色空白。
+
+```css
+/* 粘贴到 demo 的 <style> 块内 */
+.img-ph {
+  background: var(--color-light);
+  border: var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-style: italic;
+  font-size: var(--fs-sm);
+}
+```
+
+```html
+<!-- 16:9 视频封面 -->
+<div class="img-ph" style="width:100%;aspect-ratio:16/9;flex-direction:column;gap:var(--sp2);">
+  <i class="iconoir-play" style="font-size:32px;opacity:.4;"></i>
+  <span>[ Video ]</span>
+</div>
+
+<!-- 图片占位（带标题） -->
+<div style="display:flex;flex-direction:column;gap:var(--sp1);">
+  <div class="img-ph" style="height:72px;">[ Image ]</div>
+  <div style="font-size:var(--fs-xs);color:var(--color-muted);text-align:center;">图片标题</div>
+</div>
+```
+
+---
+
+### 20-2. `.m-filter-bar` — 移动端无边框筛选栏
+
+替代 tab 样式用于商品列表筛选区，横向可滚动，按钮无边框无阴影。
+
+```css
+.m-filter-bar  { display:flex; align-items:center; padding:0 var(--sp4); border-bottom:var(--border); overflow-x:auto; gap:0; }
+.m-filter-btn  { padding:var(--sp2) var(--sp3); font-size:var(--fs-sm); font-weight:700; color:var(--color-muted); white-space:nowrap; border:none; background:none; cursor:pointer; }
+.m-filter-btn.active { color:var(--color-accent); border-bottom:2px solid var(--color-accent); }
+.m-filter-sep  { color:var(--color-light); padding:var(--sp2) 0; flex-shrink:0; font-size:var(--fs-lg); }
+```
+
+```html
+<div class="m-filter-bar">
+  <button class="m-filter-btn active">All Platforms <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+  <span class="m-filter-sep">|</span>
+  <button class="m-filter-btn">Sort by <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+  <span class="m-filter-sep">|</span>
+  <button class="m-filter-btn">Price <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+</div>
+```
+
+---
+
+### 20-3. `.sidebar-sub-item` — 侧边栏二级菜单项
+
+用于左侧导航树，作为某个 `.sidebar-item` 的子级，缩进显示，不带图标。
+
+```css
+.sidebar-sub-item {
+  display: flex;
+  align-items: center;
+  padding: var(--sp1) var(--sp3) var(--sp1) calc(var(--sp3) + 20px + var(--sp3));
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  color: var(--color-muted);
+  border: 2px solid transparent;
+  user-select: none;
+}
+.sidebar-sub-item:hover  { color: var(--color-accent); background: var(--color-accent-bg); }
+.sidebar-sub-item.active { color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-bg); font-weight: 700; }
+```
+
+```html
+<!-- sidebar-item 父级之后紧跟子级 -->
+<div class="sidebar-item active" data-page="shop" onclick="switchPage('shop', this)">
+  <i class="iconoir-menu-scale"></i> Last War
+</div>
+<div class="sidebar-sub-item" data-page="detail" onclick="switchPage('detail', this)">
+  Product Details
+</div>
+```
+
+> JS 联动：`switchPage` 需同时查询 `.sidebar-item` 和 `.sidebar-sub-item` 来做高亮切换：
+> ```javascript
+> document.querySelectorAll('.sidebar-item,.sidebar-sub-item').forEach(el => el.classList.remove('active'));
+> ```
+
+
 
 > 有截图 → **100% 跟截图**。下面规则只在无截图、需自行决策时使用。
 
