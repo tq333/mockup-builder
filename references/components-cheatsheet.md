@@ -289,14 +289,13 @@
 
 ⚠️ 超链接 `<a>` 永远走 `var(--color-link)`，不跟主题。
 
-## 20. 移动端专用组件（Mobile-only）
+## 19. Media Placeholders — 图片 / 视频 / 地图占位
 
-### 20-1. `.img-ph` — 图片 / 视频占位块
+所有占位块使用同一个 `.img-ph` 类，通过 `style` 控制尺寸和内容。
 
-> ⚠️ `mockup-kit.html` 里已定义，但每个独立 demo 文件需**自带此 CSS**，否则占位块呈白色空白。
+> ⚠️ `mockup-kit.html` 里已定义 `.img-ph`，但**独立 demo 文件必须自带此 CSS**，否则白色空白。
 
 ```css
-/* 粘贴到 demo 的 <style> 块内 */
 .img-ph {
   background: var(--color-light);
   border: var(--border);
@@ -310,79 +309,125 @@
 }
 ```
 
+**6 种标准变体：**
+
 ```html
-<!-- 16:9 视频封面 -->
-<div class="img-ph" style="width:100%;aspect-ratio:16/9;flex-direction:column;gap:var(--sp2);">
+<!-- Image 16:9 -->
+<div class="img-ph" style="width:100%;aspect-ratio:16/9;">[ Image ]</div>
+
+<!-- Image 1:1 -->
+<div class="img-ph" style="width:120px;height:120px;">[ Image ]</div>
+
+<!-- Video 16:9（含播放图标） -->
+<div class="img-ph" style="width:100%;aspect-ratio:16/9;flex-direction:column;gap:4px;">
   <i class="iconoir-play" style="font-size:32px;opacity:.4;"></i>
   <span>[ Video ]</span>
 </div>
 
-<!-- 图片占位（带标题） -->
-<div style="display:flex;flex-direction:column;gap:var(--sp1);">
-  <div class="img-ph" style="height:72px;">[ Image ]</div>
-  <div style="font-size:var(--fs-xs);color:var(--color-muted);text-align:center;">图片标题</div>
+<!-- Map（含定位图标） -->
+<div class="img-ph" style="width:100%;height:160px;flex-direction:column;gap:4px;">
+  <i class="iconoir-map-pin" style="font-size:32px;opacity:.4;"></i>
+  <span>[ Map ]</span>
 </div>
+
+<!-- Profile Banner（宽横幅） -->
+<div class="img-ph" style="width:100%;height:80px;">[ Cover Banner ]</div>
+
+<!-- Ad Slot（虚线边框） -->
+<div class="img-ph" style="width:300px;height:60px;border-style:dashed;">[ Ad Slot · 300×60 ]</div>
 ```
+
+> 需要在图片下方显示标题时，套一层 flex 列：
+> ```html
+> <div style="display:flex;flex-direction:column;gap:var(--sp1);">
+>   <div class="img-ph" style="height:72px;">[ Image ]</div>
+>   <div style="font-size:var(--fs-xs);color:var(--color-muted);text-align:center;">图片标题</div>
+> </div>
+> ```
 
 ---
 
-### 20-2. `.m-filter-bar` — 移动端无边框筛选栏
+## 20. Filter Bar — 无边框筛选栏
 
-替代 tab 样式用于商品列表筛选区，横向可滚动，按钮无边框无阴影。
+适用于任何平台的列表筛选区（桌面 / 移动端通用），横向可滚动，按钮无边框无阴影。与 `.tabs` 的区别：tabs 有下划线选中态且互斥；filter bar 更轻量，可多选/下拉组合。
 
 ```css
-.m-filter-bar  { display:flex; align-items:center; padding:0 var(--sp4); border-bottom:var(--border); overflow-x:auto; gap:0; }
-.m-filter-btn  { padding:var(--sp2) var(--sp3); font-size:var(--fs-sm); font-weight:700; color:var(--color-muted); white-space:nowrap; border:none; background:none; cursor:pointer; }
-.m-filter-btn.active { color:var(--color-accent); border-bottom:2px solid var(--color-accent); }
-.m-filter-sep  { color:var(--color-light); padding:var(--sp2) 0; flex-shrink:0; font-size:var(--fs-lg); }
+.filter-bar     { display:flex; align-items:center; border-bottom:var(--border); overflow-x:auto; gap:0; background:var(--color-surface); }
+.filter-btn     { display:inline-flex; align-items:center; gap:3px; padding:var(--sp2) var(--sp3); font-family:var(--font-base); font-size:var(--fs-sm); font-weight:700; color:var(--color-ink); background:transparent; border:none; cursor:pointer; white-space:nowrap; }
+.filter-btn.active { color:var(--color-accent); }
+.filter-sep     { color:var(--color-light); padding:0 2px; font-size:var(--fs-sm); flex-shrink:0; }
 ```
 
 ```html
-<div class="m-filter-bar">
-  <button class="m-filter-btn active">All Platforms <i class="iconoir-nav-arrow-down icon-xs"></i></button>
-  <span class="m-filter-sep">|</span>
-  <button class="m-filter-btn">Sort by <i class="iconoir-nav-arrow-down icon-xs"></i></button>
-  <span class="m-filter-sep">|</span>
-  <button class="m-filter-btn">Price <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+<div class="filter-bar">
+  <button class="filter-btn active">All Platforms <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+  <span class="filter-sep">|</span>
+  <button class="filter-btn">Sort by <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+  <span class="filter-sep">|</span>
+  <button class="filter-btn">Price <i class="iconoir-nav-arrow-down icon-xs"></i></button>
+  <!-- 右对齐额外操作（如全局 Filter 按钮）-->
+  <div style="margin-left:auto;flex-shrink:0;">
+    <button class="filter-btn"><i class="iconoir-filter-list icon-xs"></i> Filter</button>
+  </div>
 </div>
 ```
 
 ---
 
-### 20-3. `.sidebar-sub-item` — 侧边栏二级菜单项
+## 21. Sidebar Nav — 侧边栏导航（含二级菜单）
 
-用于左侧导航树，作为某个 `.sidebar-item` 的子级，缩进显示，不带图标。
+**适用场景：** Demo shell 左侧导航树（桌面 / 宽屏页面方案对比），非 `template-multi.html` 的 TOC 列表。
+
+### 两种模板选择
+
+| 模板 | 适用 | 启动命令 |
+|---|---|---|
+| `template-base.html` | 单页面，无需左侧导航 | `python3 scripts/new_demo.py out.html` |
+| `template-multi.html` | **多方案平铺**，左侧 TOC + ScrollSpy 自动高亮，页面全部展开可对比 | `python3 scripts/new_demo.py out.html --multi` |
+
+> `template-multi.html` 的 TOC 用 `.shell-toc a` 类，由 ScrollSpy 自动驱动高亮，**不需要手写 `switchPage` JS**。适合"方案 A / B / C 对比"场景。
+>
+> 如果需要"点击切换、只显示当前页"的 Demo Shell（如 App 原型），需自建 `.sidebar-item` + `switchPage` JS，参见下方。
+
+### App Demo Shell 侧边栏（手动 switchPage）
+
+一级菜单 `.sidebar-item` + 二级菜单 `.sidebar-sub-item`（缩进，无图标）：
 
 ```css
-.sidebar-sub-item {
-  display: flex;
-  align-items: center;
-  padding: var(--sp1) var(--sp3) var(--sp1) calc(var(--sp3) + 20px + var(--sp3));
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: var(--fs-sm);
-  color: var(--color-muted);
-  border: 2px solid transparent;
-  user-select: none;
+.sidebar-item {
+  display:flex; align-items:center; gap:var(--sp3);
+  padding:var(--sp2) var(--sp3); border-radius:var(--radius); cursor:pointer;
+  font-size:var(--fs-sm); font-weight:700; color:var(--color-muted);
+  border:2px solid transparent; user-select:none;
 }
-.sidebar-sub-item:hover  { color: var(--color-accent); background: var(--color-accent-bg); }
-.sidebar-sub-item.active { color: var(--color-accent); border-color: var(--color-accent); background: var(--color-accent-bg); font-weight: 700; }
+.sidebar-item:hover  { color:var(--color-ink); background:var(--color-bg); }
+.sidebar-item.active { color:var(--color-accent); border-color:var(--color-accent); background:var(--color-accent-bg); }
+
+.sidebar-sub-item {
+  display:flex; align-items:center;
+  padding:var(--sp1) var(--sp3) var(--sp1) calc(var(--sp3) + 20px + var(--sp3));
+  border-radius:var(--radius); cursor:pointer;
+  font-size:var(--fs-sm); color:var(--color-muted);
+  border:2px solid transparent; user-select:none;
+}
+.sidebar-sub-item:hover  { color:var(--color-accent); background:var(--color-accent-bg); }
+.sidebar-sub-item.active { color:var(--color-accent); border-color:var(--color-accent); background:var(--color-accent-bg); font-weight:700; }
 ```
 
 ```html
-<!-- sidebar-item 父级之后紧跟子级 -->
 <div class="sidebar-item active" data-page="shop" onclick="switchPage('shop', this)">
   <i class="iconoir-menu-scale"></i> Last War
 </div>
+<!-- 紧跟父级后面，缩进显示 -->
 <div class="sidebar-sub-item" data-page="detail" onclick="switchPage('detail', this)">
   Product Details
 </div>
 ```
 
-> JS 联动：`switchPage` 需同时查询 `.sidebar-item` 和 `.sidebar-sub-item` 来做高亮切换：
-> ```javascript
-> document.querySelectorAll('.sidebar-item,.sidebar-sub-item').forEach(el => el.classList.remove('active'));
-> ```
+**switchPage JS 需同时清除两种类的 active：**
+```javascript
+document.querySelectorAll('.sidebar-item,.sidebar-sub-item').forEach(el => el.classList.remove('active'));
+```
 
 
 
