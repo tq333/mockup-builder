@@ -219,13 +219,82 @@
   <button class="page-btn"><i class="iconoir-nav-arrow-right"></i></button>
 </div>
 
-<!-- Stepper -->
+<!-- Stepper（水平，桌面） -->
 <div class="stepper">
   <div class="step"><div class="step-circle done"><i class="iconoir-check"></i></div><div class="step-label">Done</div></div>
   <div class="step-line done"></div>
   <div class="step"><div class="step-circle active">2</div><div class="step-label">Active</div></div>
   <div class="step-line"></div>
   <div class="step"><div class="step-circle">3</div><div class="step-label">Next</div></div>
+</div>
+```
+
+### Stepper · Mobile Vertical（移动端纵向）
+
+默认只显示 **当前节点 + 下一节点**；点击展开按钮展示全部，无收起。
+
+- 完成态连接线：`.m-step-vline.done`（accent 色）
+- 当前节点：`.step-circle.active`
+- 隐藏节点：`.m-step.m-step-hidden`（`display:none`，JS 展开后设为 `display:flex`）
+- 最后一个节点无需 `.m-step-vline`
+
+```html
+<div class="m-stepper">
+  <!-- done -->
+  <div class="m-step">
+    <div class="m-step-track">
+      <div class="step-circle done"><i class="iconoir-check" style="font-size:13px"></i></div>
+      <div class="m-step-vline done"></div>
+    </div>
+    <div class="m-step-content">
+      <div class="m-step-title">Order Placed</div>
+      <div class="m-step-sub">Jun 1 · 09:42</div>
+    </div>
+  </div>
+  <!-- active (current) -->
+  <div class="m-step">
+    <div class="m-step-track">
+      <div class="step-circle active">2</div>
+      <div class="m-step-vline"></div>
+    </div>
+    <div class="m-step-content">
+      <div class="m-step-title">Payment Confirmed</div>
+      <div class="m-step-sub">In progress</div>
+    </div>
+  </div>
+  <!-- next (shown by default) -->
+  <div class="m-step">
+    <div class="m-step-track">
+      <div class="step-circle">3</div>
+      <div class="m-step-vline"></div>
+    </div>
+    <div class="m-step-content">
+      <div class="m-step-title">Seller Processing</div>
+      <div class="m-step-sub">Next step</div>
+    </div>
+  </div>
+  <!-- hidden steps -->
+  <div class="m-step m-step-hidden">
+    <div class="m-step-track">
+      <div class="step-circle">4</div>
+      <div class="m-step-vline"></div>
+    </div>
+    <div class="m-step-content">
+      <div class="m-step-title">Account Transferred</div>
+      <div class="m-step-sub">Pending</div>
+    </div>
+  </div>
+  <div class="m-step m-step-hidden">
+    <div class="m-step-track"><div class="step-circle">5</div></div>
+    <div class="m-step-content">
+      <div class="m-step-title">Order Complete</div>
+      <div class="m-step-sub">Pending</div>
+    </div>
+  </div>
+  <!-- expand trigger（无收起） -->
+  <button class="m-stepper-expand" onclick="(function(btn){btn.closest('.m-stepper').querySelectorAll('.m-step-hidden').forEach(function(s){s.style.display='flex';});btn.style.display='none';})(this)">
+    <i class="iconoir-nav-arrow-down icon-xs"></i>&nbsp;View all 5 steps
+  </button>
 </div>
 ```
 

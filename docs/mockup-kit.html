@@ -328,6 +328,17 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns
 .step-label{font-size:var(--fs-xs);font-weight:400;white-space:nowrap;color:var(--color-ink);text-align:center;}
 .step-line{flex:1;min-width:20px;height:0;border-top:2px dashed var(--color-muted);margin:14px 0 0;}
 .step-line.done{border-top-style:solid;border-top-color:var(--color-accent);}
+/* Mobile Vertical Stepper */
+.m-stepper{display:flex;flex-direction:column;width:100%;max-width:360px;}
+.m-step{display:flex;align-items:flex-start;gap:var(--sp3);}
+.m-step-track{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.m-step-vline{width:2px;flex:1;min-height:var(--sp5);background:var(--color-light);margin:3px 0;}
+.m-step-vline.done{background:var(--color-accent);}
+.m-step-content{padding-bottom:var(--sp4);flex:1;}
+.m-step-title{font-size:var(--fs-sm);font-weight:700;line-height:1.4;color:var(--color-ink);}
+.m-step-sub{font-size:var(--fs-xs);color:var(--color-muted);margin-top:3px;}
+.m-step.m-step-hidden{display:none;}
+.m-stepper-expand{display:flex;align-items:center;gap:var(--sp2);background:none;border:none;font-family:var(--font-base);font-size:var(--fs-sm);color:var(--color-accent);font-weight:700;cursor:pointer;padding:var(--sp2) 0;margin-left:calc(30px + var(--sp3));}
 .sidebar-nav{width:220px;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow);background:var(--color-surface);overflow:hidden;}
 .sidebar-nav-section{padding:var(--sp2) var(--sp4);font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--color-muted);background:var(--color-bg);border-bottom:2px solid var(--color-light);}
 .sidebar-nav-item{padding:var(--sp2) var(--sp4);font-size:var(--fs-sm);display:flex;align-items:center;gap:var(--sp2);border-bottom:2px solid var(--color-light);cursor:pointer;}
@@ -1375,6 +1386,70 @@ tr:hover td{background:var(--color-bg);}
           <div class="step-circle">5</div>
           <span class="step-label">Done</span>
         </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Stepper · Mobile Vertical</div>
+      <p style="font-size:var(--fs-sm);color:var(--color-muted);margin-bottom:var(--sp4)">默认展示当前节点 + 下一节点，点击展开全部剩余步骤，无收起。</p>
+      <div class="m-stepper" id="demo-m-stepper">
+        <!-- Step 1: done -->
+        <div class="m-step">
+          <div class="m-step-track">
+            <div class="step-circle done"><i class="iconoir-check" style="font-size:13px"></i></div>
+            <div class="m-step-vline done"></div>
+          </div>
+          <div class="m-step-content">
+            <div class="m-step-title">Order Placed</div>
+            <div class="m-step-sub">Jun 1 · 09:42</div>
+          </div>
+        </div>
+        <!-- Step 2: active (current — shown by default) -->
+        <div class="m-step">
+          <div class="m-step-track">
+            <div class="step-circle active">2</div>
+            <div class="m-step-vline"></div>
+          </div>
+          <div class="m-step-content">
+            <div class="m-step-title">Payment Confirmed</div>
+            <div class="m-step-sub">In progress · Est. 2 hrs</div>
+          </div>
+        </div>
+        <!-- Step 3: next (shown by default) -->
+        <div class="m-step">
+          <div class="m-step-track">
+            <div class="step-circle">3</div>
+            <div class="m-step-vline"></div>
+          </div>
+          <div class="m-step-content">
+            <div class="m-step-title">Seller Processing</div>
+            <div class="m-step-sub">Next step</div>
+          </div>
+        </div>
+        <!-- Steps 4–5: hidden initially -->
+        <div class="m-step m-step-hidden">
+          <div class="m-step-track">
+            <div class="step-circle">4</div>
+            <div class="m-step-vline"></div>
+          </div>
+          <div class="m-step-content">
+            <div class="m-step-title">Account Transferred</div>
+            <div class="m-step-sub">Pending</div>
+          </div>
+        </div>
+        <div class="m-step m-step-hidden">
+          <div class="m-step-track">
+            <div class="step-circle">5</div>
+          </div>
+          <div class="m-step-content">
+            <div class="m-step-title">Order Complete</div>
+            <div class="m-step-sub">Pending</div>
+          </div>
+        </div>
+        <!-- Expand trigger -->
+        <button class="m-stepper-expand" onclick="(function(btn){btn.closest('.m-stepper').querySelectorAll('.m-step-hidden').forEach(function(s){s.style.display='flex';});btn.style.display='none';})(this)">
+          <i class="iconoir-nav-arrow-down icon-xs"></i>&nbsp;View all 5 steps
+        </button>
       </div>
     </div>
 
