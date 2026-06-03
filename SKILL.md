@@ -88,7 +88,7 @@ The cheatsheet (`references/components-cheatsheet.md`) covers everything that sh
 - Layout: page wrapper, two-column, navbar, breadcrumb
 - Forms: input variants, select, textarea, checkbox, radio, toggle, slider
 - Actions: button matrix (primary/danger/success/ghost/outline/sm/lg/icon/block)
-- Data display: card, list (+ section header), table, accordion (line / card; mutex by default), tabs (boxed/underlined), pagination, stepper
+- Data display: card, list (+ section header), table, accordion (line / card; mutex by default), tabs (boxed/underlined), pagination, stepper (horizontal desktop), stepper-mobile-vertical (`.m-stepper` — current+next shown by default, expandable, no collapse)
 - Status: avatar (4 sizes + sq), badge, tag, alert (4 semantics), toast, progress, spinner, skeleton, empty-state
 - Overlays: modal, dropdown, popover, tooltip, bottom-sheet
 - Frames: phone-frame, browser-frame
