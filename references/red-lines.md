@@ -99,6 +99,150 @@
 <div class="pdp-price" style="color:var(--color-danger)">$49.50</div>
 ```
 
+---
+
+## Phone Frame & Multi-page Demo 规则（从实际问题中提炼）
+
+### R1 — Overlay 定位：必须用 `position:absolute`，禁止 `position:fixed`
+
+在 `.phone-frame` 内部渲染任何浮层（bottom-sheet / modal / scrim），一律用 `position:absolute`。
+`.phone-frame` 自身须保有 `position:relative` + `overflow:hidden`。
+
+```html
+<!-- ✅ 正确：overlay 在 phone-frame 内 absolute -->
+<div class="phone-frame" style="position:relative;overflow:hidden;">
+  ...
+  <div id="scrim" style="position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:100;"></div>
+  <div id="sheet" style="position:absolute;left:0;right:0;bottom:0;z-index:101;">...</div>
+</div>
+
+<!-- ❌ 错误：fixed 会冲出 phone-frame，覆盖整个浏览器视口 -->
+<div id="sheet" style="position:fixed;bottom:0;">...</div>
+```
+
+---
+
+### R2 — Auto-hide Topbar：只用 `transform`，禁止同时改 `margin-top`
+
+正确模式：header 改为 `position:absolute`，body 用 `padding-top` 预留空间，动画只改 `transform`。
+
+```html
+<!-- HTML 结构 -->
+<div class="m-screen-inner" style="position:relative;">
+  <div id="topbar" style="position:absolute;top:0;left:0;right:0;z-index:10;
+       transition:transform .28s cubic-bezier(.4,0,.2,1), box-shadow .28s ease;">
+    <!-- 顶部导航内容 -->
+  </div>
+  <div id="body-scroll" style="/* padding-top 由 JS 初始化 */overflow-y:auto;">
+    <!-- 页面内容 -->
+  </div>
+</div>
+```
+
+```js
+// JS 初始化 + 滚动监听
+const headerEl = document.getElementById('topbar');
+const scrollEl = document.getElementById('body-scroll');
+scrollEl.style.paddingTop = headerEl.offsetHeight + 'px';    // 预留空间
+
+let lastST = 0, visible = true, ticking = false;
+scrollEl.addEventListener('scroll', () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const st = scrollEl.scrollTop;
+    if (st > lastST && st > 10 && visible) {
+      visible = false;
+      headerEl.style.transform = 'translateY(-100%)';
+      headerEl.style.boxShadow = 'none';            // ← 同步消除阴影（见 R3）
+    } else if (st < lastST && !visible) {
+      visible = true;
+      headerEl.style.transform = 'translateY(0)';
+      headerEl.style.boxShadow = '';
+    }
+    lastST = st <= 0 ? 0 : st;
+    ticking = false;
+  });
+});
+```
+
+**禁止的方案：**
+```js
+// ❌ transform + margin-top 双属性并行 → reflow 时序错位闪烁
+headerEl.style.transform = 'translateY(-100%)';
+headerEl.style.marginTop = '-' + h + 'px';
+
+// ❌ max-height 过渡 → 从底部塌陷，不是滑出效果
+clipEl.style.maxHeight = '0';
+```
+
+---
+
+### R3 — `box-shadow` 不受 `overflow:hidden` 裁切
+
+CSS 规范中 `overflow:hidden` **不裁切子元素的 `box-shadow`**（shadow 渲染在 border-box 外部）。
+当 `position:absolute` 的元素做 show/hide 动画时，若有 `box-shadow`，shadow 会在元素滑走后残留。
+
+**修法：** 将 `box-shadow` 加入 transition，隐藏时同步置为 `none`。
+
+```js
+// ✅ 隐藏时同步去掉阴影
+headerEl.style.transform = 'translateY(-100%)';
+headerEl.style.boxShadow = 'none';
+
+// ✅ 显示时恢复（空字符串 = 回归 CSS 规则）
+headerEl.style.transform = 'translateY(0)';
+headerEl.style.boxShadow = '';
+```
+
+```html
+<!-- ✅ transition 要包含 box-shadow -->
+<div style="transition: transform .28s ease, box-shadow .28s ease;">
+```
+
+---
+
+### R4 — 多页 Demo 的 sidebar active 状态
+
+多页 Demo 中每个独立 HTML 文件负责自己的 sidebar，对应当前页的 `sidebar-item` / `sidebar-sub-item` 加 `active`。
+新增页面时须**同步更新所有其他页面**的 sidebar。
+
+```html
+<!-- home.html 中 -->
+<a class="sidebar-item active" href="home.html">Home</a>   <!-- ← 当前页 active -->
+<a class="sidebar-item"        href="shop.html">Shop</a>
+
+<!-- shop.html 中 -->
+<a class="sidebar-item"        href="home.html">Home</a>
+<a class="sidebar-item active" href="shop.html">Shop</a>   <!-- ← 当前页 active -->
+```
+
+---
+
+### R5 — 独立页面 vs 页内 Overlay 的选择规则
+
+> **左侧菜单中有对应导航项 = 必须做成独立 HTML 文件。这是不可违反的约定。**
+
+| 场景 | 做法 |
+|---|---|
+| **左侧菜单中有对应导航项** | 必须做成独立 HTML 文件；sidebar 对应项加 `active` |
+| 仅演示手机内交互动效，不需要菜单导航 | 可在同一 HTML 内用 `position:absolute` overlay |
+| 两者都需要（菜单可跳转 + 有底部滑出效果） | 独立 HTML + `DOMContentLoaded` 时自动触发 overlay 动画 |
+
+```js
+// 独立页面（如 offer.html）：加载即自动展开 sheet
+document.addEventListener('DOMContentLoaded', () => openSheet());
+```
+
+**反例：**
+```js
+// ❌ 左侧菜单项 onclick 触发 overlay，不做独立 HTML
+<a onclick="openOfferSheet()">Offer Details</a>
+
+// ✅ 左侧菜单项指向独立 HTML
+<a href="offer.html">Offer Details</a>
+```
+
 ### ✅ 应该这样
 ```html
 <!-- 1. iconoir 图标 -->

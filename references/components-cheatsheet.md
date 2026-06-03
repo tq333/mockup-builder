@@ -100,10 +100,44 @@
 ```
 
 ## 6. Selection
-- `.ck-wrap` + `.ck-box` checkbox（已选 `.checked`）
-- `.ck-wrap` + `.radio-box` radio
-- `.toggle-wrap` + `.toggle-track`/`.toggle-thumb` switch（开 `.on`）
-- `.mock-slider` slider
+
+### Checkbox / Radio / Toggle
+- `.ck-wrap` + `.ck-box` checkbox（已选加 `.checked`，内放 `<i class="iconoir-check">`）
+- `.ck-wrap` + `.radio-box` radio（已选加 `.checked`，用 `::after` 实心圆）
+- `.toggle-wrap` + `.toggle-track` + `.toggle-thumb` switch（开启时给 `.toggle-track` 加 `.on`）
+
+```html
+<label class="ck-wrap">
+  <div class="ck-box checked"><i class="iconoir-check" style="font-size:11px;"></i></div>
+  Checked option
+</label>
+<div class="toggle-wrap">
+  <div class="toggle-track on"><div class="toggle-thumb"></div></div>
+  <span>Enabled</span>
+</div>
+```
+
+### Slider（静态视觉占位）
+
+> ⚠️ **必须用三层 div，禁止用 `<input type="range">`**。`<input type="range">` 不是规范组件，样式无法统一。
+
+```html
+<div class="mock-slider" style="width:240px;">
+  <div class="mock-slider-fill" style="width:70%;"></div>
+  <div class="mock-slider-thumb" style="left:calc(70% - 9px);"></div>
+</div>
+<!-- 轨道高 6px，填充为 accent 色，拇指 18×18 圆形绝对定位 top:-8px -->
+```
+
+### Quantity Stepper
+
+```html
+<div class="qty">
+  <button class="qty-btn"><i class="iconoir-minus" style="font-size:16px;"></i></button>
+  <input class="qty-value" type="number" value="1" min="1">
+  <button class="qty-btn"><i class="iconoir-plus"  style="font-size:16px;"></i></button>
+</div>
+```
 
 ## 7. Cards
 ```html
@@ -136,6 +170,9 @@
 ```
 
 ## 9. Accordion ⭐ FAQ 必备
+
+> ⚠️ **Accordion 分隔线用 `var(--color-light)`（浅灰），不是 `var(--border)`（黑色）**。
+
 ```html
 <!-- Style 1：横线分隔（FAQ 推荐） -->
 <div class="accordion accordion-line">
@@ -163,12 +200,12 @@
 
 ## 10. Tabs / Pagination / Stepper
 ```html
-<!-- Tab 风格 1：方形 -->
+<!-- Tab 风格 1：方形 box（active = accent-bg 背景 + accent 文字） -->
 <div class="tabs">
   <a class="tab-item active">Tab 1</a>
   <a class="tab-item">Tab 2</a>
 </div>
-<!-- Tab 风格 2：下划线 -->
+<!-- Tab 风格 2：下划线 line（⚠️ active = 黑色 border-bottom，即 color-ink，不是 accent 色） -->
 <div class="tabs">
   <a class="tab-line-item active">Tab 1</a>
   <a class="tab-line-item">Tab 2</a>
@@ -193,9 +230,10 @@
 ```
 
 ## 11. Avatar / Badge / Tag
-- `.avatar` `.avatar-xs/sm/md/lg`，加 `.avatar-sq` 变方形
-- `.badge` 红 / `.badge-blue` accent / `.badge-green` / `.badge-gray`
-- `.tag` 普通 / `.tag-filled` / `.tag-accent` / `.tag-danger` / `.tag-success`
+- `.avatar` 默认 36px；`.avatar-xs` 24px / `.avatar-sm` 32px / `.avatar-md` 44px / `.avatar-lg` 64px
+- 加 `.avatar-sq` 变方形（默认圆形）
+- `.badge` 红 / `.badge-blue` accent 蓝 / `.badge-green` / `.badge-gray`
+- `.tag` 普通 / `.tag-filled` / `.tag-accent` / `.tag-danger` / `.tag-success` / `.tag-warning`
 
 ```html
 <div class="avatar avatar-md">JD</div>
@@ -212,10 +250,33 @@
 
 ## 13. Overlays（仅当截图明显有 modal/sheet 才用）
 - `.modal-backdrop` + `.modal` + `.modal-header`/`.modal-body`/`.modal-footer`
-- `.bottom-sheet-wrap` + `.bottom-sheet` + `.sheet-handle`/`.sheet-body`
+- `.bottom-sheet-wrap` + `.bottom-sheet` > `.sheet-handle-wrap` > `.sheet-handle`（把手） + `.sheet-body` > `.sheet-item`（列表行）
 - `.dropdown-menu` + `.dropdown-item`
 - `.popover` + `.popover-title`/`.popover-text`
 - `.tooltip-box`
+
+> ⚠️ `.sheet-handle-wrap` 是必需的把手区容器，**不能直接把 `.sheet-handle` 放在 `.bottom-sheet` 根级**。Sheet 内部列表行用 `.sheet-item`，内容 `.h` + `.list-item-content` + `.list-item-action`。
+
+```html
+<!-- Bottom Sheet 完整结构 -->
+<div class="bottom-sheet-wrap">
+  <div class="bottom-sheet">
+    <div class="sheet-handle-wrap">
+      <div class="sheet-handle"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-item">
+        <i class="iconoir-XXX"></i>
+        <div class="list-item-content">
+          <div class="list-item-title">标题</div>
+          <div class="list-item-sub">副标题</div>
+        </div>
+        <i class="iconoir-nav-arrow-right list-item-action"></i>
+      </div>
+    </div>
+  </div>
+</div>
+```
 
 ## 14. Table
 ```html
@@ -265,6 +326,82 @@
 </div>
 ```
 ⚠️ 桌面端页面使用 `.browser-frame`，宽度统一 `1440px`，不得随意缩窄。
+
+## 16-A. Auto-hide Topbar（移动端滚动隐藏导航）
+
+> 正确实现：header `position:absolute` + body `padding-top`，动画只用 `transform`。
+> 详细规则与禁止方案见 `red-lines.md § R2 / R3`。
+
+```html
+<div class="m-screen-inner" style="position:relative;">
+  <div id="topbar" class="m-topbar"
+    style="position:absolute;top:0;left:0;right:0;z-index:10;
+           transition:transform .28s cubic-bezier(.4,0,.2,1),box-shadow .28s ease;">
+    <!-- 导航内容 -->
+  </div>
+  <div id="body-scroll" class="m-body"><!-- padding-top 由 JS 设置 --></div>
+</div>
+```
+
+```js
+const h = document.getElementById('topbar');
+const s = document.getElementById('body-scroll');
+s.style.paddingTop = h.offsetHeight + 'px';
+let last=0,vis=true,tick=false;
+s.addEventListener('scroll',()=>{
+  if(tick)return; tick=true;
+  requestAnimationFrame(()=>{
+    const st=s.scrollTop;
+    if(st>last&&st>10&&vis){ vis=false; h.style.transform='translateY(-100%)'; h.style.boxShadow='none'; }
+    else if(st<last&&!vis){ vis=true; h.style.transform=''; h.style.boxShadow=''; }
+    last=st<=0?0:st; tick=false;
+  });
+});
+```
+
+## 16-B. Phone Frame Overlay（底部浮层 / 遮罩）
+
+> Overlay 必须在 `.phone-frame` 内，用 `position:absolute`，禁止 `position:fixed`。
+> 详细规则见 `red-lines.md § R1`。
+
+```html
+<div class="phone-frame" style="position:relative;overflow:hidden;">
+  <!-- 页面主内容 -->
+
+  <!-- Scrim -->
+  <div id="scrim" onclick="closeSheet()"
+    style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:100;"></div>
+
+  <!-- Bottom Sheet -->
+  <div id="sheet" style="
+    display:none;position:absolute;left:0;right:0;bottom:0;z-index:101;
+    flex-direction:column;max-height:92%;
+    background:var(--color-surface);border-top:var(--border);
+    transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);">
+    <!-- sheet 内容 -->
+  </div>
+</div>
+```
+
+```js
+function openSheet(){
+  const scrim=document.getElementById('scrim');
+  const sheet=document.getElementById('sheet');
+  scrim.style.display='block';
+  sheet.style.display='flex';
+  void sheet.offsetWidth;          // force reflow
+  sheet.style.transform='translateY(0)';
+}
+function closeSheet(){
+  const sheet=document.getElementById('sheet');
+  sheet.style.transform='translateY(100%)';
+  setTimeout(()=>{
+    sheet.style.display='none';
+    document.getElementById('scrim').style.display='none';
+  },300);
+}
+```
 
 ## 17. Icons (iconoir)
 常用清单（更多去 https://iconoir.com）：
